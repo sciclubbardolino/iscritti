@@ -70,21 +70,43 @@
     const csvUrl =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vSyz0J9aZV2b2-G5cAkVKZW22O3lcI2L-Rb7gr_Yp_Wf5NEWsZzaQLyeHZ0oYLLdE7sdxEeQlvvejtr/pub?output=csv";
 
+    // Colonne da nascondere ESATTAMENTE come nella Google Sheet
+    const colonneDaTogliere = [
+      "Indirizzo Mail",
+      "Cellulare",
+      "Codice Fiscale",
+      "Immagini certificato medico in corso di validità",
+      "Modulo d'iscrizione"
+    ];
+
     fetch(csvUrl)
       .then(response => response.text())
       .then(csv => {
         let rows = csv.split("\n").map(r => r.split(","));
 
-        const headers = rows[0];
-        const data = rows.slice(1);
+        // Intestazioni originali
+        const headersOriginali = rows[0];
 
-        // Tabella moderna con header fisso
+        // Indici delle colonne da eliminare
+        const indiciDaRimuovere = headersOriginali
+          .map((h, i) => colonneDaTogliere.includes(h) ? i : -1)
+          .filter(i => i !== -1);
+
+        // Filtra le intestazioni
+        const headersFiltrati = headersOriginali.filter((h, i) => !indiciDaRimuovere.includes(i));
+
+        // Filtra i dati riga per riga
+        const dataFiltrata = rows.slice(1).map(riga =>
+          riga.filter((cell, i) => !indiciDaRimuovere.includes(i))
+        );
+
+        // Crea la DataTable con header fisso e stile moderno
         let table = $('#tabella').DataTable({
-          data: data,
-          columns: headers.map(h => ({ title: h })),
-          paging: false,        
+          data: dataFiltrata,
+          columns: headersFiltrati.map(h => ({ title: h })),
+          paging: false,
           responsive: true,
-          fixedHeader: true     // HEADER FISSO
+          fixedHeader: true
         });
       });
   </script>
