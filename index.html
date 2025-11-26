@@ -6,33 +6,68 @@
 
   <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
 
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
   <!-- DataTables JS -->
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f4f7fb;
+      margin: 30px;
+      color: #1f2937;
     }
-    table {
-      width: 100%;
+
+    h2 {
+      color: #1e40af;
+      font-size: 26px;
+      margin-bottom: 5px;
+    }
+
+    p {
+      color: #4b5563;
+      margin-bottom: 20px;
+    }
+
+    table.dataTable thead {
+      background: #1e40af;
+      color: white;
+    }
+
+    table.dataTable thead th {
+      font-weight: 600;
+    }
+
+    table.dataTable tbody tr:nth-child(even) {
+      background-color: #eef2ff;
+    }
+
+    table.dataTable tbody tr:hover {
+      background-color: #dbeafe;
+    }
+
+    .dataTables_filter input {
+      border-radius: 8px;
+      border: 1px solid #94a3b8;
+      padding: 6px 10px;
     }
   </style>
 </head>
 <body>
 
   <h2>Dati raccolti dal Google Form</h2>
-  <p>Tabella filtrabile, ordinabile e con barra di ricerca.</p>
+  <p>Tabella moderna con header fisso, ricerca e ordinamento.</p>
 
-  <table id="tabella" class="display"></table>
+  <table id="tabella" class="display" style="width:100%"></table>
 
   <script>
     // URL del CSV pubblicato
-    const csvUrl = 
+    const csvUrl =
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vSyz0J9aZV2b2-G5cAkVKZW22O3lcI2L-Rb7gr_Yp_Wf5NEWsZzaQLyeHZ0oYLLdE7sdxEeQlvvejtr/pub?output=csv";
 
     fetch(csvUrl)
@@ -40,16 +75,16 @@
       .then(csv => {
         let rows = csv.split("\n").map(r => r.split(","));
 
-        // Prima riga = intestazioni
         const headers = rows[0];
         const data = rows.slice(1);
 
-        // Crea la tabella
-        $('#tabella').DataTable({
+        // Tabella moderna con header fisso
+        let table = $('#tabella').DataTable({
           data: data,
           columns: headers.map(h => ({ title: h })),
-          pageLength: 25,
-          responsive: true
+          paging: false,        
+          responsive: true,
+          fixedHeader: true     // HEADER FISSO
         });
       });
   </script>
