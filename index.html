@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Dati Google Form</title>
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Dati raccolti dal Google Form</h2>
+  <p>Tabella filtrabile, ordinabile e con barra di ricerca.</p>
+
+  <table id="tabella" class="display"></table>
+
+  <script>
+    // URL del CSV pubblicato
+    const csvUrl = 
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSyz0J9aZV2b2-G5cAkVKZW22O3lcI2L-Rb7gr_Yp_Wf5NEWsZzaQLyeHZ0oYLLdE7sdxEeQlvvejtr/pub?output=csv";
+
+    fetch(csvUrl)
+      .then(response => response.text())
+      .then(csv => {
+        let rows = csv.split("\n").map(r => r.split(","));
+
+        // Prima riga = intestazioni
+        const headers = rows[0];
+        const data = rows.slice(1);
+
+        // Crea la tabella
+        $('#tabella').DataTable({
+          data: data,
+          columns: headers.map(h => ({ title: h })),
+          pageLength: 25,
+          responsive: true
+        });
+      });
+  </script>
+
+</body>
+</html>
